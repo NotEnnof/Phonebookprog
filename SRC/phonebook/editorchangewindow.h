@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QDataWidgetMapper>
+#include <QRegularExpression>
+#include <QCloseEvent>
 
 namespace Ui {
 class EditOrChangeWindow;
@@ -23,8 +25,17 @@ private slots:
 
     void on_cancelButton_clicked();
 
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::EditOrChangeWindow *ui;
+    QString AllEmails;
+
+signals:
+    void cancelsingnal();
+
+public slots:
+    void EmailSearchslot(QString mails);
 };
 
 #endif // EDITORCHANGEWINDOW_H

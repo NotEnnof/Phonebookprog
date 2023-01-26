@@ -34,12 +34,23 @@ private slots:
 
     void on_searchButton_clicked();
 
+    void on_dumpButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     QSqlTableModel *model;
     int currentRow;
+    bool searchFlag;
+    int rowCount;
     EditOrChangeWindow *editWindow;
     QModelIndex rowIndex;
+    QString allmails;
+
+public slots:
+    void cancelslot();
+
+signals:
+    void EmailSerchsignal(QString);
 };
 #endif // MAINWINDOW_H

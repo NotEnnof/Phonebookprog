@@ -25,11 +25,19 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableView->verticalHeader()->hide();
         currentRow = model->rowCount() - 1;
         rowIndex = model->index(model->rowCount() - 1, 0);
+        searchFlag = false;
+        allmails = "";
+        //ui->tableView->selectColumn(2);
+        for(int i=0; i!=model->rowCount();i++)
+            allmails += model->data(model->index(i, 2)).toString();
 
 
         editWindow = new EditOrChangeWindow();
         editWindow->setParent(this, Qt::Window);
         editWindow->setModel(model);
+
+        connect(editWindow, &EditOrChangeWindow::cancelsingnal, this, &MainWindow::cancelslot);
+        connect(this, &MainWindow::EmailSerchsignal, editWindow, &EditOrChangeWindow::EmailSearchslot);
 
     }
     else
@@ -48,16 +56,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_editButton_clicked()
 {
+
     model->insertRow(model->rowCount());
-    model->setData(model->index(model->rowCount() - 1, 0), model->rowCount());
+    if(searchFlag == true){
+        rowCount += 1;
+        model->setData(model->index(model->rowCount() - 1, 0), rowCount);
+    }
+    else model->setData(model->index(model->rowCount() - 1, 0), model->rowCount());
+
     editWindow->mapper->setCurrentModelIndex(model->index(model->rowCount() - 1, 0));
     editWindow->show();
+    emit EmailSerchsignal(allmails);
 }
 
 
 void MainWindow::on_deleteButton_clicked()
 {
     model->removeRow(currentRow);
+    rowCount -= 1;
     model->select();
 }
 
@@ -80,12 +96,18 @@ void MainWindow::on_resetButton_clicked()
 {
     model->setFilter("");
     ui->tableView->sortByColumn(0, Qt::AscendingOrder);
+    searchFlag = false;
 }
 
 
 void MainWindow::on_searchButton_clicked()
 {
-    QString searchText = ui->searchPTEdit->toPlainText();
+    model->setFilter("");
+    model->select();
+    searchFlag = true;
+    rowCount = model->rowCount();
+
+    QString searchText = ui->searchPTEdit->text();
     int searchObject = ui->searchCBox->currentIndex();
     searchText = "'%" + searchText + "%'";
     QString str;
@@ -108,4 +130,24 @@ void MainWindow::on_searchButton_clicked()
     }
     model->setFilter(str + " like " + searchText);
 }
+
+
+void MainWindow::on_dumpButton_clicked()
+{
+    int i;
+    model->setFilter("");
+    ui->tableView->sortByColumn(0, Qt::AscendingOrder);
+    for(i=0; i!=model->rowCount(); i++){
+        model->removeRow(i);
+    }
+    model->select();
+}
+
+void MainWindow::cancelslot()
+{
+    model->select();
+    if(model->data(model->index(model->rowCount() - 1, 2)).toString() != "")
+        allmails += model->data(model->index(model->rowCount() - 1, 2)).toString();
+}
+
 

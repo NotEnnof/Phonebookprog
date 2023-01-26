@@ -7,15 +7,27 @@
     <x>0</x>
     <y>0</y>
     <width>714</width>
-    <height>574</height>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Форма редактирования</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QLabel" name="label_6">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>80</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <pointsize>20</pointsize>
@@ -82,6 +94,18 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="3" column="0">
+        <widget class="QLabel" name="fullNameError">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label">
          <property name="font">
@@ -97,7 +121,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QPlainTextEdit" name="fullName">
+        <widget class="QLineEdit" name="fullName">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -105,8 +129,12 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="fullNameError">
+      </layout>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="2" column="0">
+        <widget class="QLabel" name="emailError">
          <property name="font">
           <font>
            <pointsize>12</pointsize>
@@ -117,10 +145,6 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QLabel" name="label_3">
          <property name="font">
@@ -136,23 +160,11 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QPlainTextEdit" name="email">
+        <widget class="QLineEdit" name="email">
          <property name="font">
           <font>
            <pointsize>14</pointsize>
           </font>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="emailError">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
