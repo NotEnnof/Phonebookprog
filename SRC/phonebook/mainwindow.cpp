@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
         rowIndex = model->index(model->rowCount() - 1, 0);
         searchFlag = false;
         allmails = "";
-        //ui->tableView->selectColumn(2);
         for(int i=0; i!=model->rowCount();i++)
             allmails += model->data(model->index(i, 2)).toString();
 
@@ -134,13 +133,18 @@ void MainWindow::on_searchButton_clicked()
 
 void MainWindow::on_dumpButton_clicked()
 {
-    int i;
-    model->setFilter("");
-    ui->tableView->sortByColumn(0, Qt::AscendingOrder);
-    for(i=0; i!=model->rowCount(); i++){
-        model->removeRow(i);
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Очистить книгу", "Все ваши записи будут удалены. Вы уверены?", QMessageBox::Yes | QMessageBox::No);
+    if(reply == QMessageBox::Yes){
+        model->setFilter("");
+        ui->tableView->sortByColumn(0, Qt::AscendingOrder);
+        for(int i=0; i!=model->rowCount(); i++){
+            model->removeRow(i);
+        }
+        model->select();
+        ui->searchCBox->setCurrentIndex(0);
+        ui->searchPTEdit->setText("");
     }
-    model->select();
+
 }
 
 void MainWindow::cancelslot()
