@@ -1,13 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QFile>
+#include <QMessageBox>
+#include <QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    db = QSqlDatabase::addDatabase("QSQLITE");
+    db = QSqlDatabase::addDatabase("QSQLITE", "dbconnection");
     db.setDatabaseName("../../DB/Phonebook.db");
+    standardDB = QSqlDatabase::addDatabase("QSQLITE", "standardDBconnection");
+    standardDB.setDatabaseName("../../DB/StandardDB.db");
     if(db.open())
     {
         ui->statusbar->showMessage("Приятной работы");
@@ -71,9 +76,41 @@ void MainWindow::on_editButton_clicked()
 
 void MainWindow::on_deleteButton_clicked()
 {
+    QVariant seqNum = model->data(model->index(currentRow, 0));
     model->removeRow(currentRow);
-    rowCount -= 1;
     model->select();
+    model->setFilter("");
+    for(int i = seqNum.toInt()-1; i!=model->rowCount(); i++){
+        model->setData(model->index(i, 0), i+1);
+        ui->tableView->selectRow(i);
+    }
+    model->select();
+    rowCount -= 1;
+    if(searchFlag){
+        rowCount = model->rowCount();
+        QString searchText = ui->searchPTEdit->text();
+        int searchObject = ui->searchCBox->currentIndex();
+        searchText = "'%" + searchText + "%'";
+        QString str;
+        switch (searchObject) {
+        case 0:
+            str = "seqnumber";
+            break;
+        case 1:
+            str = "name";
+            break;
+        case 2:
+            str = "email";
+            break;
+        case 3:
+            str = "birthday";
+            break;
+        case 4:
+            str = "depositdate";
+            break;
+        }
+        model->setFilter(str + " like " + searchText);
+    }
 }
 
 
@@ -143,6 +180,28 @@ void MainWindow::on_dumpButton_clicked()
         model->select();
         ui->searchCBox->setCurrentIndex(0);
         ui->searchPTEdit->setText("");
+        allmails = "";
+
+        if(standardDB.open()){
+
+            standardmodel = new QSqlTableModel(this, standardDB);
+            standardmodel->setTable("phonebook");
+            standardmodel->select();
+            for(int i=0; i!=standardmodel->rowCount(); i++){
+                model->insertRow(i);
+                model->setData(model->index(i, 0), standardmodel->data(standardmodel->index(i, 0)));
+                model->setData(model->index(i, 1), standardmodel->data(standardmodel->index(i, 1)).toString());
+                model->setData(model->index(i, 2), standardmodel->data(standardmodel->index(i, 2)).toString());
+                model->setData(model->index(i, 3), standardmodel->data(standardmodel->index(i, 3)).toString());
+                model->setData(model->index(i, 4), standardmodel->data(standardmodel->index(i, 4)).toString());
+                ui->tableView->selectRow(i);
+            }
+            model->select();
+            for(int i=0; i!=model->rowCount();i++)
+                allmails += model->data(model->index(i, 2)).toString();
+
+        }
+
     }
 
 }

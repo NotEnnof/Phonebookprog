@@ -3,12 +3,8 @@
 
 #include <QMainWindow>
 #include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
 #include <QtSql/QSqlTableModel>
-#include <QDebug>
-#include <QFile>
 #include <editorchangewindow.h>
-#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,7 +36,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
+    QSqlDatabase standardDB;
     QSqlTableModel *model;
+    QSqlTableModel *standardmodel;
     int currentRow;
     bool searchFlag;
     int rowCount;
